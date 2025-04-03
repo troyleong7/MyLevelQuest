@@ -38,6 +38,7 @@ namespace MyLevelQuest.API.Repositories
             existingTask.Title = task.Title;
             existingTask.Description = task.Description;
             existingTask.IsCompleted = task.IsCompleted;
+            existingTask.Type = task.Type;
 
             await _context.SaveChangesAsync();
             return existingTask;
