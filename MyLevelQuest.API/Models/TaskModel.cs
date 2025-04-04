@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MyLevelQuest.API.Models
 {
@@ -24,7 +25,8 @@ namespace MyLevelQuest.API.Models
         public bool IsCompleted { get; set; } = false; // Default to false
 
         [Required]
-        public TaskType Type { get; set; } = TaskType.Side;
+        [JsonConverter(typeof(JsonStringEnumConverter))] // Converts string values to enum automatically
+        public TaskType Type { get; set; }
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Default to now
         

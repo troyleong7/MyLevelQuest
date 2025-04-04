@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyLevelQuest.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3d5dbcdbdade5b46263fc9f3a3dfd184b211d0f7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+811844d39905ab47b6d0d29f7e9eac77e4be974e")]
 [assembly: System.Reflection.AssemblyProductAttribute("MyLevelQuest.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MyLevelQuest.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
