@@ -6,6 +6,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using BCrypt.Net;
+using MyLevelQuest.API.Settings;
+using Microsoft.Extensions.Options;
 
 namespace MyLevelQuest.API.Controllers
 {
@@ -15,27 +17,28 @@ namespace MyLevelQuest.API.Controllers
     {
         private readonly IUserRepository _userRepo;
         private readonly IConfiguration _configuration;
+        private readonly JwtSettings _jwtSettings;
 
-        public AuthController(IUserRepository userRepo, IConfiguration configuration)
+        public AuthController(IUserRepository userRepo, IConfiguration configuration, IOptions<JwtSettings> jwtSettings)
         {
             _userRepo = userRepo;
             _configuration = configuration;
+            _jwtSettings = jwtSettings.Value;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserModel userDto)
+        public async Task<IActionResult> Register([FromBody] RegisterUserModel dto)
         {
-            var existingUser = await _userRepo.GetUserByEmailAsync(userDto.Email);
+            var existingUser = await _userRepo.GetUserByEmailAsync(dto.Email);
             if (existingUser != null)
                 return BadRequest("User already exists.");
 
-            // Hash the password
-            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userDto.PasswordHash);
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
             var newUser = new UserModel
             {
-                Username = userDto.Username,
-                Email = userDto.Email,
+                Username = dto.Username,
+                Email = dto.Email,
                 PasswordHash = passwordHash
             };
 
@@ -43,13 +46,15 @@ namespace MyLevelQuest.API.Controllers
             return Ok(new { addedUser.Id, addedUser.Email, addedUser.Username });
         }
 
+
+
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserModel loginDto)
+        public async Task<IActionResult> Login([FromBody] LoginUserModel dto)
         {
-            var user = await _userRepo.GetUserByEmailAsync(loginDto.Email);
+            var user = await _userRepo.GetUserByEmailAsync(dto.Email);
             if (user == null) return Unauthorized("User not found.");
 
-            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(loginDto.PasswordHash, user.PasswordHash);
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
             if (!isPasswordValid) return Unauthorized("Invalid credentials.");
 
             string token = GenerateJwtToken(user);
@@ -65,17 +70,15 @@ namespace MyLevelQuest.API.Controllers
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Username)
             };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key not configured")));
-
+            
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddDays(7),
+                expires: DateTime.UtcNow.AddDays(7),
                 signingCredentials: creds
             );
 
