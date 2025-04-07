@@ -22,8 +22,7 @@ namespace MyLevelQuest.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTasks()
         {
-            int userId = GetAuthenticatedUserId();
-            var tasks = await _taskRepository.GetAllTasksAsync(userId);
+            var tasks = await _taskRepository.GetAllTasksAsync();
             return Ok(tasks);
         }
 

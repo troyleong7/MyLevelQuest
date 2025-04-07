@@ -13,11 +13,9 @@ namespace MyLevelQuest.API.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<TaskModel>> GetAllTasksAsync(int userId)
+        public async Task<IEnumerable<TaskModel>> GetAllTasksAsync()
         {
-            return await _context.Tasks
-                .Where(t => t.UserId == userId)
-                .ToListAsync();
+            return await _context.Tasks.ToListAsync();
         }
 
         public async Task<IEnumerable<TaskModel>> GetTasksByUserIdAsync(int userId)

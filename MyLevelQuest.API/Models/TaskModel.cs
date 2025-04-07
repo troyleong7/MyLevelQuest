@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace MyLevelQuest.API.Models
@@ -34,7 +33,5 @@ namespace MyLevelQuest.API.Models
         [Required]
         public int UserId { get; set; } // Foreign key
 
-        [ForeignKey("UserId")]
-        public UserModel? User { get; set; }
     }
 }

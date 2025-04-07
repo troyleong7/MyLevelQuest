@@ -4,7 +4,7 @@ namespace MyLevelQuest.API.Repositories
 {
     public interface ITaskRepository
     {
-        Task<IEnumerable<TaskModel>> GetAllTasksAsync(int userId);
+        Task<IEnumerable<TaskModel>> GetAllTasksAsync();
         Task<IEnumerable<TaskModel>> GetTasksByUserIdAsync(int userId);
         Task<TaskModel?> GetTaskByTitleAsync(string title, int userId);
         Task<TaskModel> AddTaskAsync(TaskModel task, int userId);
