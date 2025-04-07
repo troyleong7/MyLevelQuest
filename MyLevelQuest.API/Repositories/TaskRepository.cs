@@ -13,26 +13,38 @@ namespace MyLevelQuest.API.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<TaskModel>> GetAllTasksAsync()
+        public async Task<IEnumerable<TaskModel>> GetAllTasksAsync(int userId)
         {
-            return await _context.Tasks.ToListAsync(); // Fetch all tasks
+            return await _context.Tasks
+                .Where(t => t.UserId == userId)
+                .ToListAsync();
         }
 
-        public async Task<TaskModel?> GetTaskByIdAsync(int id)
+        public async Task<IEnumerable<TaskModel>> GetTasksByUserIdAsync(int userId)
         {
-            return await _context.Tasks.FindAsync(id); // Find a task by ID
+            return await _context.Tasks
+                .Where(t => t.UserId == userId)
+                .ToListAsync();
         }
 
-        public async Task<TaskModel> AddTaskAsync(TaskModel task)
+        public async Task<TaskModel?> GetTaskByTitleAsync(string title, int userId)
         {
+            return await _context.Tasks
+                .FirstOrDefaultAsync(t => t.Title.ToLower() == title.ToLower() && t.UserId == userId);
+        }
+
+        public async Task<TaskModel> AddTaskAsync(TaskModel task, int userId)
+        {
+            task.UserId = userId;
             _context.Tasks.Add(task);
-            await _context.SaveChangesAsync(); // Save to database
+            await _context.SaveChangesAsync();
             return task;
         }
 
-        public async Task<TaskModel?> UpdateTaskAsync(TaskModel task)
+        public async Task<TaskModel?> UpdateTaskAsync(TaskModel task, int userId)
         {
-            var existingTask = await _context.Tasks.FindAsync(task.Id);
+            var existingTask = await _context.Tasks
+                .FirstOrDefaultAsync(t => t.Id == task.Id && t.UserId == userId);
             if (existingTask == null) return null;
 
             existingTask.Title = task.Title;
@@ -44,9 +56,10 @@ namespace MyLevelQuest.API.Repositories
             return existingTask;
         }
 
-        public async Task<bool> DeleteTaskAsync(int id)
+        public async Task<bool> DeleteTaskAsync(int id, int userId)
         {
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _context.Tasks
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == userId);
             if (task == null) return false;
 
             _context.Tasks.Remove(task);
@@ -54,9 +67,11 @@ namespace MyLevelQuest.API.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<TaskModel>> GetTasksByTypeAsync(TaskType type)
+        public async Task<IEnumerable<TaskModel>> GetTasksByTypeAsync(TaskType type, int userId)
         {
-            return await _context.Tasks.Where(t => t.Type == type).ToListAsync();
+            return await _context.Tasks
+                .Where(t => t.Type == type && t.UserId == userId)
+                .ToListAsync();
         }
     }
 }

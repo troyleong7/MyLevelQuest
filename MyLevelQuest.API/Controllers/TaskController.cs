@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using MyLevelQuest.API.Models;
 using MyLevelQuest.API.Repositories;
@@ -19,47 +20,80 @@ namespace MyLevelQuest.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllTasks()
         {
-            var tasks = await _taskRepository.GetAllTasksAsync();
+            int userId = GetAuthenticatedUserId();
+            var tasks = await _taskRepository.GetAllTasksAsync(userId);
             return Ok(tasks);
         }
 
-        // GET: api/task/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetTaskById(int id)
+        // GET: api/task/title/{title}
+        [HttpGet("title/{title}")]
+        public async Task<IActionResult> GetTaskByTitle(string title)
         {
-            var task = await _taskRepository.GetTaskByIdAsync(id);
+            int userId = GetAuthenticatedUserId();
+            var task = await _taskRepository.GetTaskByTitleAsync(title, userId);
             if (task == null) return NotFound();
             return Ok(task);
         }
+        
+        // GET: api/task/user
+        [HttpGet("user")]
+        public async Task<IActionResult> GetTasksByUser()
+        {
+            int userId = GetAuthenticatedUserId();
+            var tasks = await _taskRepository.GetTasksByUserIdAsync(userId);
+            return Ok(tasks);
+        }
 
-        // POST: api/task
+       // POST: api/task
         [HttpPost]
         public async Task<IActionResult> CreateTask([FromBody] TaskModel task)
         {
-            if (task == null) return BadRequest("Task cannot be null");
+            int userId = GetAuthenticatedUserId();
+            task.UserId = userId;
 
-            var newTask = await _taskRepository.AddTaskAsync(task);
-            return CreatedAtAction(nameof(GetTaskById), new { id = newTask.Id }, newTask);
+            var createdTask = await _taskRepository.AddTaskAsync(task, userId);
+            return CreatedAtAction(nameof(GetTaskByTitle), new { title = task.Title }, createdTask);
         }
 
-        // PUT: api/task/{id}
+         // PUT: api/task/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(int id, [FromBody] TaskModel task)
         {
             if (task == null || id != task.Id) return BadRequest("Invalid task data");
 
-            var updatedTask = await _taskRepository.UpdateTaskAsync(task);
+            int userId = GetAuthenticatedUserId();
+            var updatedTask = await _taskRepository.UpdateTaskAsync(task, userId);
             if (updatedTask == null) return NotFound();
+
             return Ok(updatedTask);
         }
 
-        // DELETE: api/task/{id}
+         // DELETE: api/task/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
-            var deleted = await _taskRepository.DeleteTaskAsync(id);
+            int userId = GetAuthenticatedUserId();
+            var deleted = await _taskRepository.DeleteTaskAsync(id, userId);
             if (!deleted) return NotFound();
             return NoContent();
         }
+
+        // GET: api/task/type/{type}
+        [HttpGet("type/{type}")]
+        public async Task<IActionResult> GetTasksByType(TaskType type)
+        {
+            int userId = GetAuthenticatedUserId();
+            var tasks = await _taskRepository.GetTasksByTypeAsync(type, userId);
+            return Ok(tasks);
+        }
+         private int GetAuthenticatedUserId()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (int.TryParse(userIdString, out int userId))
+                return userId;
+
+            throw new InvalidOperationException("User ID is not available or invalid.");
+        }
+
     }
 }

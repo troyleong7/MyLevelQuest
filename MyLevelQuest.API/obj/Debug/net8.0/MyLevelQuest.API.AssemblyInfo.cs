@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("dc02edf7-d2ea-47e3-85fa-c5cc48fc8a53")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyLevelQuest.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+811844d39905ab47b6d0d29f7e9eac77e4be974e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82aa4cb6d0940f869102db7b1fde5044c6d5610e")]
 [assembly: System.Reflection.AssemblyProductAttribute("MyLevelQuest.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MyLevelQuest.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
