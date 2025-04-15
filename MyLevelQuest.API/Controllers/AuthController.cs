@@ -59,7 +59,7 @@ namespace MyLevelQuest.API.Controllers
 
             string token = GenerateJwtToken(user);
 
-            return Ok(new { token });
+            return Ok(new {user.Username, token });
         }
 
         private string GenerateJwtToken(UserModel user)
