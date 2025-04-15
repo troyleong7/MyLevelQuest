@@ -30,7 +30,7 @@ export default function DashboardPage() {
     side: [],
   });
   const [showModal, setShowModal] = useState(false);
-  
+
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -97,11 +97,19 @@ export default function DashboardPage() {
     }
   };
 
+  const handleLogout = () => {
+    if (confirm("Hero! Are you sure you want to leave the tavern?")) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("username");
+      router.push("/login");
+    }
+    };
+    
   if (!isToken) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 via-gray-100 to-purple-200 p-6">
-      <UserHeader username={userName} level={3} />
+      <UserHeader username={userName} level={3} onLogout={handleLogout} />
 
       {/* Add Quest Button */}
       <div className="flex my-4">
@@ -278,14 +286,18 @@ export default function DashboardPage() {
               className="bg-white rounded-2xl shadow-md p-4 border border-purple-100"
             >
               <h2 className="text-xl font-bold mb-4 capitalize text-purple-700">
-                {type} Tasks
+                {type} Quests
               </h2>
               <div className="space-y-4">
                 {grouped[type].length === 0 ? (
                   <p className="text-gray-400 italic">No {type} quests yet</p>
                 ) : (
                   grouped[type].map((task) => (
-                    <TaskCard key={task.id} task={task} onClick={() => setEditingTask(task)} />
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      onClick={() => setEditingTask(task)}
+                    />
                   ))
                 )}
               </div>
