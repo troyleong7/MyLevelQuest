@@ -16,11 +16,11 @@ type Task = {
       <div
         onClick={() => onClick?.(task)}
         className={`rounded-xl border p-4 shadow-sm cursor-pointer transition ${
-          task.isCompleted ? 'bg-gray-200 opacity-50' : 'bg-white'
+          task.isCompleted ? 'bg-gray-400 opacity-40' : 'bg-yellow-50'
         } hover:shadow-md`}
       >
-        <h3 className="text-lg font-semibold text-gray-800">{task.title}</h3>
-        <p className="text-sm text-gray-600">{task.description}</p>
+        <h3 className="text-lg font-semibold text-green-950">{task.title}</h3>
+        <p className="text-sm text-green-950">{task.description}</p>
       </div>
     )
   }
