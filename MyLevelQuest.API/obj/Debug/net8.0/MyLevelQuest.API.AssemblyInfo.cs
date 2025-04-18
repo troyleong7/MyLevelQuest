@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyLevelQuest.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1612efe023d26be1d12d0535dbd4d0677d59ac08")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+32412cf1d611561516037a97ee5e0483857df7b7")]
 [assembly: System.Reflection.AssemblyProductAttribute("MyLevelQuest.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MyLevelQuest.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

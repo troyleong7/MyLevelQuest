@@ -20,9 +20,43 @@ namespace MyLevelQuest.API.Repositories
 
         public async Task<IEnumerable<TaskModel>> GetTasksByUserIdAsync(int userId)
         {
-            return await _context.Tasks
-                .Where(t => t.UserId == userId)
-                .ToListAsync();
+            var tasks = await _context.Tasks.Where(t => t.UserId == userId).ToListAsync();
+            var now = DateTime.UtcNow;
+
+            foreach (var task in tasks)
+            {
+                bool shouldReset = false;
+
+                switch (task.Type)
+                {
+                    case TaskType.Daily:
+                        shouldReset = task.LastUpdated.Date < now.Date;
+                        break;
+                    case TaskType.Weekly:
+                        var lastWeek = System.Globalization.CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(task.LastUpdated, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+                        var thisWeek = System.Globalization.CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(now, System.Globalization.CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+                        shouldReset = task.LastUpdated.Year < now.Year || lastWeek < thisWeek;
+                        break;
+                    case TaskType.Monthly:
+                        shouldReset = task.LastUpdated.Month < now.Month || task.LastUpdated.Year < now.Year;
+                        break;
+                    case TaskType.Yearly:
+                        shouldReset = task.LastUpdated.Year < now.Year;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (shouldReset && task.IsCompleted)
+                {
+                    task.IsCompleted = false;
+                    task.LastUpdated = now;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return tasks;
+    
         }
 
         public async Task<TaskModel?> GetTaskByTitleAsync(string title, int userId)

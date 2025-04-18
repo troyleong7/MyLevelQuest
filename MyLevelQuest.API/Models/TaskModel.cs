@@ -29,9 +29,11 @@ namespace MyLevelQuest.API.Models
         public TaskType Type { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Default to now
-        
+
         [Required]
         public int UserId { get; set; } // Foreign key
+        
+        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 
     }
 }
