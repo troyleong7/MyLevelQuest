@@ -6,5 +6,6 @@ namespace MyLevelQuest.API.Repositories
     {
         Task<UserModel> AddUserAsync(UserModel user);
         Task<UserModel?> GetUserByEmailAsync(string email);
+        Task<UserModel?> GetUserByIdAsync(int id);
     }
 }

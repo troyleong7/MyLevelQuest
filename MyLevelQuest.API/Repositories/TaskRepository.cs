@@ -56,7 +56,7 @@ namespace MyLevelQuest.API.Repositories
 
             await _context.SaveChangesAsync();
             return tasks;
-    
+
         }
 
         public async Task<TaskModel?> GetTaskByTitleAsync(string title, int userId)
@@ -79,10 +79,26 @@ namespace MyLevelQuest.API.Repositories
                 .FirstOrDefaultAsync(t => t.Id == task.Id && t.UserId == userId);
             if (existingTask == null) return null;
 
+            bool wasIncomplete = !existingTask.IsCompleted && task.IsCompleted;
+
             existingTask.Title = task.Title;
             existingTask.Description = task.Description;
             existingTask.IsCompleted = task.IsCompleted;
             existingTask.Type = task.Type;
+
+            if (wasIncomplete && task.IsCompleted)
+            {
+                var user = await _context.Users.FindAsync(userId);
+                if (user != null)
+                {
+                    user.ExperiencePoints += GetXpForTask(task.Type);
+                    while (user.ExperiencePoints >= 10)
+                    {
+                        user.Level++;
+                        user.ExperiencePoints -= 10;
+                    }
+                }
+            }
 
             await _context.SaveChangesAsync();
             return existingTask;
@@ -105,5 +121,19 @@ namespace MyLevelQuest.API.Repositories
                 .Where(t => t.Type == type && t.UserId == userId)
                 .ToListAsync();
         }
+        private int GetXpForTask(TaskType type)
+        {
+            return type switch
+            {
+                TaskType.Side => 3,
+                TaskType.Daily => 1,
+                TaskType.Weekly => 3,
+                TaskType.Monthly => 5,
+                TaskType.Yearly => 10,
+                _ => 0
+            };
+        }
+
+
     }
 }

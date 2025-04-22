@@ -20,6 +20,7 @@ type GroupedTasks = Record<TaskType, Task[]>;
 
 export default function DashboardPage() {
   const [userName, setUserName] = useState<string>("");
+  const [userLevel, setUserLevel] = useState<number>(0);
   const router = useRouter();
   const [isToken, setIsToken] = useState(false);
   const [grouped, setGrouped] = useState<GroupedTasks>({
@@ -41,15 +42,29 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    const username = localStorage.getItem("username");
     if (!token) {
       router.push("/login");
     } else {
       setIsToken(true);
-      setUserName(username || "Hero");
+      loadUser(); 
       loadTasks();
     }
   }, []);
+
+  const loadUser = async () => {
+    try {
+      const res = await fetchWithAuth("http://localhost:5163/api/user/me");
+      if (res.ok) {
+        const user = await res.json();
+        setUserName(user.username);
+        setUserLevel(user.level);
+      } else {
+        console.error("Failed to fetch user:", await res.text());
+      }
+    } catch (err) {
+      console.error("Error loading user:", err);
+    }
+  };
 
   const loadTasks = async () => {
     try {
@@ -109,7 +124,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-700 to-green-950 p-6">
-      <UserHeader username={userName} level={3} onLogout={handleLogout} />
+      <UserHeader username={userName} level={userLevel} onLogout={handleLogout} />
 
       {/* Add Quest Button */}
       <div className="flex my-4">

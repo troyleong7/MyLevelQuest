@@ -17,7 +17,10 @@ namespace MyLevelQuest.API.Models
 
         [Required]
         [JsonIgnore]
-        public required string PasswordHash { get; set; }  
+        public required string PasswordHash { get; set; }
 
+        public int ExperiencePoints { get; set; } = 0;
+        public int Level { get; set; } = 1;
+    
     }
 }
