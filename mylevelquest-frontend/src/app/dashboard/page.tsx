@@ -104,7 +104,7 @@ export default function DashboardPage() {
 
       if (res.ok) {
         setShowModal(false);
-        setNewTask({ title: "", description: "", type: "daily" });
+        setNewTask({ title: "", description: "", type: "side" });
         loadTasks();
       } else {
         console.error("Failed to create task:", await res.text());
@@ -284,6 +284,7 @@ export default function DashboardPage() {
                     );
                     setEditingTask(null);
                     loadTasks();
+                    loadUser();
                   }}
                 >
                   Save
