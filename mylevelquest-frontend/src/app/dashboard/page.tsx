@@ -21,6 +21,7 @@ type GroupedTasks = Record<TaskType, Task[]>;
 export default function DashboardPage() {
   const [userName, setUserName] = useState<string>("");
   const [userLevel, setUserLevel] = useState<number>(0);
+  const [userXp, setUserXp] = useState<number>(0);
   const router = useRouter();
   const [isToken, setIsToken] = useState(false);
   const [grouped, setGrouped] = useState<GroupedTasks>({
@@ -58,6 +59,7 @@ export default function DashboardPage() {
         const user = await res.json();
         setUserName(user.username);
         setUserLevel(user.level);
+        setUserXp(user.experiencePoints);
       } else {
         console.error("Failed to fetch user:", await res.text());
       }
@@ -124,7 +126,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-700 to-green-950 p-6">
-      <UserHeader username={userName} level={userLevel} onLogout={handleLogout} />
+      <UserHeader username={userName} level={userLevel} xp={userXp} onLogout={handleLogout} />
 
       {/* Add Quest Button */}
       <div className="flex my-4">
