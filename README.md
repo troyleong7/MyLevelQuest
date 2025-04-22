@@ -20,9 +20,10 @@
 
 ### ☁️  Enhancements 
 - **JWT Authentication** – for secure user login and session management.
+- **Level-up system** — increse productivity by leveling up.
 
 ### 🌱  Future Enhancements (Coming soon)
-- **Level-up system** — increse productivity by leveling up.
+**Brain-storming!** — let me know if you have any ideas on how to enhance this system to make it more fun!
 
 ---
 
@@ -58,7 +59,27 @@ npm run dev
 - The frontend should now be running at http://localhost:3000
 
 ## 📸 Screenshots
-Coming soon
+
+### 🔐 User Login 
+![Login](./screenshots/MLQss-login.png)
+
+### 🆕 User Register 
+![Register](./screenshots/MLQss-register.png)
+
+### 🧭 Dashboard View  
+**Before completing a quest**
+
+![Dashboard-Before](./screenshots/MLQss-dashboard.png)
+
+**After completing a quest**
+
+![Dashboard-After](./screenshots/MLQss-dashboard2.png)
+
+### ✍️ Task Creation  
+![Task Creation](./screenshots/MLQss-create.png)
+
+### ✏️ Task Edit
+![Task Edit](./screenshots/MLQss-edit.png)
 
 ## 🛠️ Contributing
 
